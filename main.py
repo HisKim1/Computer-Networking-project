@@ -1,12 +1,13 @@
-import socket
+import struct
 from socket import *
+import os
 
 BUFF_SIZE = 1024
 
+
 # parameter :
-# function : get python file from user's local computer
+# function : get python file from user's local computer / return file as struct
 def getSourceCode():
-    file_address = input('location of .py file : ')
 
 
 # parameter :
@@ -16,6 +17,19 @@ def createConnection():
 
     # socket.connect parameter 'address' = (hostname, port) tuple로 제공해야 함
     client_socket.connect(getServerInfo())
+
+    file_name = input('.py file name : ')
+    FILE_SIZE = os.path.getsize(file_name)
+    FILE_SIZE = struct.pack('L', FILE_SIZE)
+
+    f = open(file_name, 'rb')
+    l = f.read(BUFF_SIZE)
+
+
+    while l:
+        client_socket.send(l)
+        l = f.read(BUFF_SIZE)
+    f.close()
 
 
 # parameter :
